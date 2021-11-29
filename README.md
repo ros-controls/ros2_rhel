@@ -1,0 +1,1 @@
+This is a sample Dockerfile that show ros2 installed on almalinux. My most recent public build can be found at docker.io/jaronl/ros2_alma on hub.docker.com.
