@@ -16,6 +16,7 @@ RUN dnf config-manager --set-enabled powertools
 RUN dnf install -y ros-${ROS_DISTRO}-ros-base \
 python3-rosdep \
 python3-colcon-common-extensions
+RUN rosdep init
 
 # set up sourcing of ros
 COPY ./ros_entrypoint.sh /
