@@ -11,12 +11,14 @@ RUN dnf install \
   gcc-c++ \
   make \
   langpacks-en \
+  git \
   -y --refresh
 RUN dnf config-manager --set-enabled powertools 
 RUN dnf install -y ros-${ROS_DISTRO}-ros-base \
 python3-rosdep \
 python3-colcon-common-extensions
 RUN rosdep init
+RUN pip3 install vcstool colcon-mixin colcon-coveragepy-result colcon-lcov-result
 
 # set up sourcing of ros
 COPY ./ros_entrypoint.sh /
