@@ -1,0 +1,29 @@
+
+---
+name: build and publish docker images
+
+on:
+  push:
+    branch:
+      - 'main'
+  schedule:
+    - cron: "0 0 0 ? * FRI *"
+
+jobs:
+  build_images:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        ros_distro: ['galactic', 'rolling']
+    steps:
+      - uses: docker/setup-buildx-action@v1
+      - uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/ros:${{ matrix.ros_distro }}-alma
+          build-args: |
+            ROS_DISTRO=${{ matrix.ros_distro }}
