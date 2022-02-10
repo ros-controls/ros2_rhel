@@ -7,7 +7,7 @@ on:
     branch:
       - 'main'
   schedule:
-    - cron: "0 0 0 ? * FRI *"
+    - cron: '0 0 * * FRI'
 
 jobs:
   build_images:
