@@ -1,8 +1,8 @@
-
 ---
 name: build and publish docker images
 
 on:
+  workflow_dispatch:
   push:
     branch:
       - 'main'
