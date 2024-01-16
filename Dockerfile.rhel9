@@ -1,4 +1,4 @@
-FROM almalinux:8
+FROM almalinux:9
 ARG ROS_DISTRO=rolling
 
 # install ros
@@ -12,7 +12,7 @@ RUN dnf install \
   langpacks-en \
   git \
   -y --refresh
-RUN dnf config-manager --set-enabled powertools 
+RUN dnf config-manager --set-enabled crb 
 
 ENV ROS_DISTRO=${ROS_DISTRO}
 RUN dnf install -y ros-${ROS_DISTRO}-ros-base \
