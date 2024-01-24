@@ -1,4 +1,4 @@
-FROM almalinux:9
+FROM almalinux:8
 ARG ROS_DISTRO=rolling
 
 # install ros
@@ -13,7 +13,7 @@ RUN dnf install \
   git \
   wget \
   -y --refresh
-RUN dnf config-manager --set-enabled crb 
+RUN dnf config-manager --set-enabled powertools 
 
 ENV ROS_DISTRO=${ROS_DISTRO}
 RUN dnf install -y ros-${ROS_DISTRO}-ros-base \
@@ -21,22 +21,6 @@ python3-rosdep \
 python3-colcon-common-extensions
 RUN rosdep init
 RUN pip3 install vcstool colcon-mixin colcon-coveragepy-result colcon-lcov-result
-
-# install cmake 3.23.5
-RUN \
-  cd && \
-  wget https://github.com/Kitware/CMake/releases/download/v3.23.5/cmake-3.23.5-linux-x86_64.tar.gz && \
-  cd /usr && \
-  tar --strip-components=1 -xzf ~/cmake-3.23.5-linux-x86_64.tar.gz  && \
-  rm ~/cmake-3.23.5-linux-x86_64.tar.gz
-
-# install additional dependencies
-# TODO where does the mix of python3.9 and python3.11 come from?
-RUN \
-  cd && \
-  wget https://bootstrap.pypa.io/get-pip.py && \
-  python3.11 get-pip.py && rm get-pip.py && \
-  python3.11 -m pip install catkin-pkg
 
 # setup colcon mixin and metadata
 RUN colcon mixin add default \
@@ -46,14 +30,15 @@ RUN colcon mixin add default \
   https://raw.githubusercontent.com/colcon/colcon-metadata-repository/master/index.yaml && \
   colcon metadata update
 
+# we have to compile generate_parameter_library from source
 ENV ROS2_WS /opt/ros2_ws
 RUN mkdir -p $ROS2_WS/src
 WORKDIR $ROS2_WS
-ADD ros-controls.rhel9.repos .
-RUN vcs import src < ros-controls.rhel9.repos && \
-  source /opt/ros/$ROS_DISTRO/setup.sh && \
+ADD ros-controls.rhel8.repos .
+RUN vcs import src < ros-controls.rhel8.repos && \
+  source /opt/ros/$ROS_DISTRO/setup.bash && \
   rosdep update --rosdistro $ROS_DISTRO && \
-  rosdep install -iyr --from-path src || true && \
+  rosdep install -iyr --from-path src && \
   colcon build \
     --mixin release build-testing-off \
     --cmake-args --no-warn-unused-cli \

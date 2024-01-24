@@ -26,6 +26,7 @@ jobs:
       - uses: docker/build-push-action@v5
         with:
           push: true
+          file: Dockerfile.rhel8
           tags: ghcr.io/${{ github.repository_owner }}/ros:${{ matrix.ros_distro }}-rhel
           build-args: |
             ROS_DISTRO=${{ matrix.ros_distro }}
