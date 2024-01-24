@@ -20,7 +20,7 @@ RUN dnf install -y ros-${ROS_DISTRO}-ros-base \
 python3-rosdep \
 python3-colcon-common-extensions
 RUN rosdep init
-RUN pip3 install vcstool colcon-mixin colcon-coveragepy-result colcon-lcov-result
+RUN pip3 install vcstool colcon-mixin colcon-coveragepy-result colcon-lcov-result lark empy==3.3.4
 
 # install cmake 3.23.5
 RUN \
