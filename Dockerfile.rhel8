@@ -21,7 +21,7 @@ python3-rosdep \
 python3-colcon-common-extensions
 RUN rosdep init
 # somehow a wrong version of empy is installed, so we have to uninstall it first
-RUN pip3 uninstall empy && pip3 install vcstool colcon-mixin colcon-coveragepy-result colcon-lcov-result lark empy==3.3.4
+RUN pip3 uninstall -y empy && pip3 install vcstool colcon-mixin colcon-coveragepy-result colcon-lcov-result lark empy==3.3.4
 
 # setup colcon mixin and metadata
 RUN colcon mixin add default \
