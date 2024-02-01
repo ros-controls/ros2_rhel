@@ -20,8 +20,7 @@ RUN dnf install -y ros-${ROS_DISTRO}-ros-base \
 python3-rosdep \
 python3-colcon-common-extensions
 RUN rosdep init
-# somehow a wrong version of empy is installed, so we have to uninstall it first
-RUN pip3 uninstall -y empy && pip3 install vcstool colcon-mixin colcon-coveragepy-result colcon-lcov-result lark empy==3.3.4
+RUN pip3 install vcstool colcon-mixin colcon-coveragepy-result colcon-lcov-result
 
 # install cmake 3.23.5
 RUN \
@@ -32,12 +31,14 @@ RUN \
   rm ~/cmake-3.23.5-linux-x86_64.tar.gz
 
 # install additional dependencies
-# TODO where does the mix of python3.9 and python3.11 come from?
+# TODO(christophfroehlich) where does the mix of python3.9 and python3.11 come from?
+# install them above with pip3 if this is solved
+# TODO(christophfroehlich) somehow a wrong version of empy is installed, so we have to uninstall it first
 RUN \
   cd && \
   wget https://bootstrap.pypa.io/get-pip.py && \
   python3.11 get-pip.py && rm get-pip.py && \
-  python3.11 -m pip install catkin-pkg
+  python3.11 -m pip install catkin-pkg empy==3.3.4 lark
 
 # setup colcon mixin and metadata
 RUN colcon mixin add default \
