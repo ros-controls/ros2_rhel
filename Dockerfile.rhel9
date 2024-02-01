@@ -38,7 +38,7 @@ RUN \
   cd && \
   wget https://bootstrap.pypa.io/get-pip.py && \
   python3.11 get-pip.py && rm get-pip.py && \
-  python3.11 -m pip install catkin-pkg empy==3.3.4 lark pyyaml colcon-coveragepy-result colcon-lcov-result
+  python3.11 -m pip install catkin-pkg empy==3.3.4 lark pyyaml
 
 # setup colcon mixin and metadata
 RUN colcon mixin add default \
