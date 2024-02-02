@@ -1,44 +1,54 @@
 FROM almalinux:9
 ARG ROS_DISTRO=rolling
 
-# install ros
+# ROS prerequisites
+# see https://docs.ros.org/en/rolling/Installation/RHEL-Install-RPMs.html
+RUN dnf install -y langpacks-en glibc-langpack-en
+RUN export LANG=en_US.UTF-8
+RUN dnf install -y 'dnf-command(config-manager)' epel-release
+RUN dnf config-manager --set-enabled crb
+
 ADD http://packages.ros.org/ros2/rhel/ros2.repo /etc/yum.repos.d/ros2.repo
-RUN dnf install \
-  'dnf-command(config-manager)' \
-  epel-release \
-  cmake \
+RUN dnf makecache -y
+RUN dnf install -y \
   gcc-c++ \
-  make \
-  langpacks-en \
   git \
-  wget \
-  -y --refresh
-RUN dnf config-manager --set-enabled crb 
+  make \
+  patch \
+  python3-colcon-common-extensions \
+  python3-mypy \
+  python3-pip \
+  python3-pydocstyle \
+  python3-pytest \
+  python3-pytest-repeat \
+  python3-pytest-rerunfailures \
+  python3-rosdep \
+  python3-setuptools \
+  python3-vcstool \
+  wget
 
+# install some pip packages needed for testing and
+# not available as RPMs
+# use the same versions as on Ubuntu Jammy
+RUN python3 -m pip install -U --user \
+  flake8==4.0.1 \
+  pyflakes==2.4.0 \
+  flake8-blind-except==0.1.1 \
+  flake8-class-newline \
+  flake8-deprecated \
+  colcon-mixin 
+
+# install ros-base
 ENV ROS_DISTRO=${ROS_DISTRO}
-RUN dnf install -y ros-${ROS_DISTRO}-ros-base \
-python3-rosdep \
-python3-colcon-common-extensions
-RUN rosdep init
-RUN pip3 install vcstool colcon-mixin colcon-coveragepy-result colcon-lcov-result
+RUN dnf install -y ros-${ROS_DISTRO}-ros-base
 
-# install cmake 3.23.5
+# install cmake 3.22.1 (the same version as Ubuntu Jammy default). Needed for RSL
 RUN \
   cd && \
-  wget https://github.com/Kitware/CMake/releases/download/v3.23.5/cmake-3.23.5-linux-x86_64.tar.gz && \
+  wget https://github.com/Kitware/CMake/releases/download/v3.22.1/cmake-3.22.1-linux-x86_64.tar.gz && \
   cd /usr && \
-  tar --strip-components=1 -xzf ~/cmake-3.23.5-linux-x86_64.tar.gz  && \
-  rm ~/cmake-3.23.5-linux-x86_64.tar.gz
-
-# install additional dependencies
-# TODO(christophfroehlich) where does the mix of python3.9 and python3.11 come from?
-# install them above with pip3 if this is solved
-# TODO(christophfroehlich) somehow a wrong version of empy is installed, so we have to uninstall it first
-RUN \
-  cd && \
-  wget https://bootstrap.pypa.io/get-pip.py && \
-  python3.11 get-pip.py && rm get-pip.py && \
-  python3.11 -m pip install catkin-pkg empy==3.3.4 lark pyyaml
+  tar --strip-components=1 -xzf ~/cmake-3.22.1-linux-x86_64.tar.gz  && \
+  rm ~/cmake-3.22.1-linux-x86_64.tar.gz
 
 # setup colcon mixin and metadata
 RUN colcon mixin add default \
@@ -48,12 +58,14 @@ RUN colcon mixin add default \
   https://raw.githubusercontent.com/colcon/colcon-metadata-repository/master/index.yaml && \
   colcon metadata update
 
+# build generate_parameter_library from source
 ENV ROS2_WS /opt/ros2_ws
 RUN mkdir -p $ROS2_WS/src
 WORKDIR $ROS2_WS
 ADD ros-controls.rhel9.repos .
 RUN vcs import src < ros-controls.rhel9.repos && \
   source /opt/ros/$ROS_DISTRO/setup.sh && \
+  rosdep init && \
   rosdep update --rosdistro $ROS_DISTRO && \
   rosdep install -iyr --from-path src || true && \
   colcon build \
