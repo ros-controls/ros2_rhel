@@ -46,6 +46,9 @@ RUN vcs import src < ros-controls.rhel8.repos && \
     --packages-up-to generate_parameter_library && \
     rm -rf log src build
 
+# add default.yaml to the image
+ADD defaults.yaml /root/.colcon/defaults.yaml
+
 # set up sourcing of ros
 COPY ./ros_entrypoint.sh /
 ENTRYPOINT [ "/ros_entrypoint.sh" ]
