@@ -1,7 +1,7 @@
 repositories:
   rsl:
     type: git
-    url: https://github.com/christophfroehlich/RSL.git
+    url: https://github.com/PickNikRobotics/RSL.git
     version:  main
   generate_parameter_library:
     type: git
