@@ -8,7 +8,8 @@ RUN export LANG=en_US.UTF-8
 RUN dnf install -y 'dnf-command(config-manager)' epel-release
 RUN dnf config-manager --set-enabled crb
 
-ADD http://packages.ros.org/ros2/rhel/ros2.repo /etc/yum.repos.d/ros2.repo
+# ADD http://packages.ros.org/ros2/rhel/ros2.repo /etc/yum.repos.d/ros2.repo
+ADD http://packages.ros.org/ros2-testing/rhel/ros2-testing.repo /etc/yum.repos.d/ros2.repo
 RUN dnf makecache -y
 RUN dnf install -y \
   gcc-c++ \
