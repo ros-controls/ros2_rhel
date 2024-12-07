@@ -31,8 +31,8 @@ RUN colcon mixin add default \
   https://raw.githubusercontent.com/colcon/colcon-metadata-repository/master/index.yaml && \
   colcon metadata update
 
-# we have to compile generate_parameter_library from source
-ENV ROS2_WS /opt/ros2_ws
+# build generate_parameter_library and other deps from source
+ENV ROS2_WS=/opt/ros2_ws
 RUN mkdir -p $ROS2_WS/src
 WORKDIR $ROS2_WS
 ADD ros-controls.rhel8.repos .
@@ -43,7 +43,7 @@ RUN vcs import src < ros-controls.rhel8.repos && \
   colcon build \
     --mixin release build-testing-off \
     --cmake-args --no-warn-unused-cli \
-    --packages-up-to generate_parameter_library && \
+    --packages-up-to generate_parameter_library pal_statistics && \
     rm -rf log src build
 
 # add default.yaml to the image
