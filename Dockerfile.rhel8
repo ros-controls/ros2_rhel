@@ -31,7 +31,7 @@ RUN colcon mixin add default \
   https://raw.githubusercontent.com/colcon/colcon-metadata-repository/master/index.yaml && \
   colcon metadata update
 
-# we have to compile generate_parameter_library from source
+# build generate_parameter_library and other deps from source
 ENV ROS2_WS /opt/ros2_ws
 RUN mkdir -p $ROS2_WS/src
 WORKDIR $ROS2_WS
