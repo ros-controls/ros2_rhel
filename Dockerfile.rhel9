@@ -60,7 +60,7 @@ RUN colcon mixin add default \
   colcon metadata update
 
 # build generate_parameter_library and other deps from source
-ENV ROS2_WS /opt/ros2_ws
+ENV ROS2_WS=/opt/ros2_ws
 RUN mkdir -p $ROS2_WS/src
 WORKDIR $ROS2_WS
 ADD ros-controls.rhel9.repos .
