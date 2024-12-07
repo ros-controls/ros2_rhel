@@ -43,7 +43,7 @@ RUN vcs import src < ros-controls.rhel8.repos && \
   colcon build \
     --mixin release build-testing-off \
     --cmake-args --no-warn-unused-cli \
-    --packages-up-to generate_parameter_library && \
+    --packages-up-to generate_parameter_library pal_statistics && \
     rm -rf log src build
 
 # add default.yaml to the image
