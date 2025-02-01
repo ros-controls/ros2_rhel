@@ -40,7 +40,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ros_distro: ['iron', 'jazzy', 'rolling']
+        ros_distro: ['jazzy', 'rolling']
     steps:
       - uses: actions/checkout@v4
       - uses: docker/setup-buildx-action@v3
