@@ -49,6 +49,9 @@ RUN vcs import src < ros-controls.rhel8.repos && \
 # add default.yaml to the image
 ADD defaults.yaml /root/.colcon/defaults.yaml
 
+# there is no python3-graphviz on rhel8, so install it via pip 
+RUN pip3 install graphviz
+
 # set up sourcing of ros
 COPY ./ros_entrypoint.sh /
 ENTRYPOINT [ "/ros_entrypoint.sh" ]
